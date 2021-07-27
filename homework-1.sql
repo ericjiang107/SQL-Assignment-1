@@ -15,11 +15,11 @@ WHERE amount >= 3.99 AND amount <= 5.99;
 
 
 -- Question 3: What film does the store have the most of? (search in inventory)
-SELECT film_id, MAX(inventory_id)
+SELECT film_id, COUNT(film_id)
 FROM inventory
 GROUP BY film_id
-ORDER BY MAX(inventory_id) DESC;
--- Answer for Q3: film_id: 1000 has the most inventory with a total of: 4581 copies 
+ORDER BY COUNT(film_id) DESC;
+-- Answer for Q3: 72 ties with 8 copies total
 
 
 -- Question 4: How many customers have the last name 'William'?
@@ -30,10 +30,11 @@ WHERE last_name = 'William';
 
 
 -- Question 5: What store employee (get the id) sold the most rentals? 
-SELECT staff_id, rental_id
+SELECT COUNT(staff_id), staff_id
 FROM rental
-ORDER BY rental_id DESC
--- Answer for Q5: Staff_id 2 sold the most rentals
+GROUP BY staff_id
+ORDER BY COUNT(staff_id) DESC
+-- Answer for Q5: Staff_id 1 sold the most rentals
 
 
 -- Question 6: How many different districts are there?
@@ -51,24 +52,27 @@ ORDER BY COUNT(film_actor) DESC;
 
 
 -- Question 8: From store_id 1, how many customers have a last name ending with 'es' (use customer table)
-SELECT COUNT(last_name)
+SELECT COUNT(last_name), store_id
 FROM customer
-WHERE last_name LIKE '__%es';
--- Answer for Q8: 21 customers have a last name ending with 'es'
+WHERE last_name LIKE '%es'
+GROUP BY store_id;
+-- Answer for Q8: 13 customers have a last name ending with 'es' for store_id 1
 
 
 -- Question 9: How many payment amounts (4.99, 5.99, etc.) had a number of rentals above 250 for customers with ids between
 -- 380 and 430? (use group by and having > 250)
-SELECT COUNT(amount)
+SELECT COUNT(amount), amount
 FROM payment
-WHERE customer_id > 380 AND customer_id < 430
-GROUP BY rental_id > 250;
--- Answer for Q9: 1202 payment accounts
+WHERE customer_id BETWEEN 380 AND 430
+GROUP BY amount
+HAVING COUNT(amount) > 250
+ORDER BY amount ASC;
+-- Answer for Q9: 281 payment accounts
 
 
 -- Question 10: Within the film table, how many rating categories are there? And what rating has the most movies total?
-SELECT rating, SUM(rental_duration)
+SELECT rating, COUNT(rating)
 FROM film
 GROUP BY rating
-ORDER BY SUM(rental_duration) DESC
--- Answer for Q10: There are 5 rating categories with PG-13 having the most movies total at 1127
+ORDER BY COUNT(rating) DESC;
+-- Answer for Q10: There are 5 rating categories with PG-13 having the most movies total at 223
